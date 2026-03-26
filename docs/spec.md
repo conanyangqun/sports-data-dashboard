@@ -178,6 +178,18 @@ python main.py export --input ./data/data.db --output ./data/data.json
 python main.py stats --input ./data/data.db
 ```
 
+#### 4.2.5 用户管理
+```bash
+# 初始化用户信息
+python main.py user init "username" --avatar "avatar_url" --bio "user bio"
+
+# 查看用户信息
+python main.py user show [username]
+
+# 更新用户信息
+python main.py user update "username" --avatar "new_avatar_url" --bio "new bio"
+```
+
 ### 4.3 FIT文件解析规范
 
 #### 4.3.1 解析流程
@@ -203,7 +215,7 @@ python main.py stats --input ./data/data.db
 ```python
 FIT字段 -> 数据库字段
 sport -> activity_type
-timestamp -> start_time
+start_time -> start_time
 total_timer_time -> duration
 total_distance -> distance
 total_calories -> calories
@@ -411,7 +423,10 @@ jobs:
           python-version: '3.9'
       - name: Install dependencies
         run: |
-          pip install fitparse
+          pip install fitparse click
+      - name: Initialize database
+        run: |
+          python data-manager/main.py init
       - name: Parse FIT files
         run: |
           python data-manager/main.py import ./fit-files/ --output ./frontend/public/data/data.db
@@ -505,10 +520,12 @@ export const config = {
 ## 十三、数据更新流程
 
 ### 13.1 本地更新流程
-1. 将新的FIT文件放入`fit-files/`目录
-2. 运行数据管理程序：`python data-manager/main.py import ./fit-files/`
-3. 导出数据：`python data-manager/main.py export`
-4. 启动前端开发服务器：`npm run dev`
+1. 初始化数据库：`python data-manager/main.py init`
+2. 初始化用户信息：`python data-manager/main.py user init "username" --avatar "avatar_url" --bio "user bio"`
+3. 将新的FIT文件放入`fit-files/`目录
+4. 运行数据管理程序：`python data-manager/main.py import ./fit-files/`
+5. 导出数据：`python data-manager/main.py export`
+6. 启动前端开发服务器：`npm run dev`
 
 ### 13.2 GitHub Actions更新流程
 1. 将新的FIT文件提交到仓库
