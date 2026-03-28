@@ -3,62 +3,63 @@
 ## 第一阶段：项目初始化和基础架构
 
 ### 1.1 项目结构搭建
-- [ ] 创建项目根目录结构
-- [ ] 创建frontend目录（Vue3项目）
-- [ ] 创建data-manager目录（Python数据管理程序）
-- [ ] 创建docs目录（文档）
-- [ ] 创建fit-files目录（FIT文件存储）
-- [ ] 配置.gitignore
+- [x] 创建项目根目录结构
+- [x] 创建frontend目录（Vue3项目）
+- [x] 创建data-manager目录（Python数据管理程序）
+- [x] 创建docs目录（文档）
+- [x] 创建fit-files目录（FIT文件存储）
+- [x] 配置.gitignore
 - [ ] 编写README.md
 
 ### 1.2 前端项目初始化
-- [ ] 初始化Vue3项目（使用Vite）
-- [ ] 安装npm依赖（Vue3, Vue Router, Pinia, ECharts, sql.js等）
-- [ ] 配置Vite构建工具
-- [ ] 创建public/data目录（数据文件存储）
+- [x] 初始化Vue3项目（使用Vite）
+- [x] 安装npm依赖（Vue3, Vue Router, Pinia, ECharts, sql.js等）
+- [x] 配置Vite构建工具
+- [x] 创建public/data目录（数据文件存储）
 - [ ] 配置代码规范（ESLint, Prettier）
 
 ### 1.3 数据管理程序初始化
-- [ ] 创建Python虚拟环境
-- [ ] 安装Python依赖（fitparse, click等）
-- [ ] 创建CLI基础框架
-- [ ] 创建配置文件（config.py）
+- [x] 创建Python虚拟环境
+- [x] 安装Python依赖（fitparse, click等）
+- [x] 创建CLI基础框架
+- [x] 创建配置文件（config.py）
 
 ## 第二阶段：数据管理程序开发
 
 ### 2.1 核心模块开发
-- [ ] 创建FIT文件解析器（parser.py）
-- [ ] 实现FIT文件读取和验证
-- [ ] 实现运动数据提取逻辑
-- [ ] 实现运动类型映射
+- [x] 创建FIT文件解析器（parser.py）
+- [x] 实现FIT文件读取和验证
+- [x] 实现运动数据提取逻辑
+- [x] 实现运动类型映射
 - [ ] 编写FIT解析单元测试
 
 ### 2.2 数据库操作模块
-- [ ] 创建数据库操作模块（database.py）
-- [ ] 实现SQLite数据库初始化
-- [ ] 实现数据插入功能
-- [ ] 实现数据查询功能
-- [ ] 实现数据统计功能
-- [ ] 创建数据库表结构
+- [x] 创建数据库操作模块（database.py）
+- [x] 实现SQLite数据库初始化
+- [x] 实现数据插入功能
+- [x] 实现数据查询功能
+- [x] 实现数据统计功能
+- [x] 创建数据库表结构
 
 ### 2.3 数据导出模块
-- [ ] 创建数据导出模块（exporter.py）
-- [ ] 实现SQLite到JSON的转换
+- [x] 创建数据导出模块（exporter.py）
+- [x] 实现SQLite到JSON的转换
 - [ ] 实现数据格式验证
 - [ ] 实现数据压缩优化
 - [ ] 编写导出功能单元测试
 
 ### 2.4 CLI命令实现
-- [ ] 实现init命令（初始化数据库）
-- [ ] 实现import命令（导入FIT文件）
-- [ ] 实现export命令（导出JSON）
-- [ ] 实现stats命令（查看统计信息）
-- [ ] 实现命令行参数解析
-- [ ] 添加帮助文档
+- [x] 实现init命令（初始化数据库）
+- [x] 实现import命令（导入FIT文件）
+- [x] 实现export命令（导出JSON）
+- [x] 实现stats命令（查看统计信息）
+- [x] 实现命令行参数解析
+- [x] 添加帮助文档
+- [x] 实现用户管理命令（user init/show/update）
 
 ### 2.5 数据处理优化
-- [ ] 实现批量导入功能
-- [ ] 实现数据去重逻辑
+- [x] 实现批量导入功能
+- [x] 实现数据去重逻辑
 - [ ] 实现增量更新支持
 - [ ] 添加错误处理和日志记录
 - [ ] 优化性能（批量插入、索引等）
