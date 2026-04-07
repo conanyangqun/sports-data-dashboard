@@ -467,9 +467,9 @@ function handleModeChange(mode: DisplayMode) {
   updateChart()
 }
 
-function handleMetricChange(metric: ChartMetric) {
-  currentMetric.value = metric
-  dataStore.setChartMetric(metric)
+function handleMetricChange(metric: string) {
+  currentMetric.value = metric as ChartMetric
+  dataStore.setChartMetric(metric as ChartMetric)
   updateChart()
 }
 

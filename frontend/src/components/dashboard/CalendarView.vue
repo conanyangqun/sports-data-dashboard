@@ -242,8 +242,7 @@ function updateChart() {
       left: 30,
       right: 30,
       bottom: 30,
-      itemSize: 14,
-      cellSize: 'auto',
+      cellSize: ['auto', 14],
       yearLabel: { show: false },
       dayLabel: {
         nameMap: 'cn',
@@ -263,7 +262,6 @@ function updateChart() {
         borderWidth: 1,
         borderColor: '#E5E7EB'
       },
-      year: selectedYear.value.toString(),
       range: selectedYear.value.toString()
     },
     series: {
@@ -368,9 +366,9 @@ function handleYearInput() {
 }
 
 // 处理指标切换
-function handleMetricChange(metric: CalendarMetric) {
-  currentMetric.value = metric
-  dataStore.setCalendarMetric(metric)
+function handleMetricChange(metric: string) {
+  currentMetric.value = metric as CalendarMetric
+  dataStore.setCalendarMetric(metric as CalendarMetric)
   updateChart()
 }
 
