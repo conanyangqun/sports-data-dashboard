@@ -286,24 +286,33 @@ App.vue
 
 #### 5.2.1 UserProfile.vue
 - 显示用户头像、用户名、简介
-- 显示最近1年运动统计（次数、距离、时长）
+- 显示最近1周运动数据统计（总距离、总时长、总次数、总热量、平均速度）
 - 从数据文件读取用户信息
 
 #### 5.2.2 CalendarView.vue
 - 使用ECharts日历图展示运动数据
-- 支持年份切换
+- 支持年份切换，默认展示数据中最新1年的运动数据
 - 鼠标悬停显示当日运动详情
+- 默认以距离着色，可切换为时长、次数、热量、平均速度着色
 - 颜色深浅表示运动强度
 
 #### 5.2.3 ChartView.vue
 - 使用ECharts柱形图展示运动数据
 - 支持四种显示模式：周、月、年、全部
-- 双Y轴：左侧显示运动次数，右侧显示运动距离
+- 数据统计部分按对应周期统计：总距离、总时长、总次数、总热量、平均速度
+- 柱形图纵轴默认为运动距离，可切换为时长、次数、热量、平均速度
+- 柱形图横轴配置：
+  - 周模式：横轴为天
+  - 月模式：横轴为天
+  - 年模式：横轴为周
+  - 全部模式：横轴为年
 
 #### 5.2.4 ActivityList.vue
 - 表格展示运动数据列表
+- 显示字段：运动日期、运动类型、运动距离、运动时长、热量、平均速度、最大速度、平均心率、最大心率、平均踏频、最大踏频
 - 支持分页
 - 支持按日期、类型筛选
+- 默认以运动日期倒序排列，支持点击表头切换排序方式
 
 ### 5.3 数据读取层
 
@@ -368,16 +377,42 @@ state: {
     activities: [],
     calendarData: {},
     chartData: {},
-    currentMode: 'week',
-    currentYear: new Date().getFullYear()
+    weekStats: {},           // 最近1周统计数据
+    currentMode: 'week',     // 当前显示模式：week/month/year/all
+    currentYear: new Date().getFullYear(),
+    calendarMetric: 'distance',  // 日历图着色指标
+    chartMetric: 'distance'      // 柱形图纵轴指标
 }
 actions: {
     loadData(),
-    processCalendarData(year),
-    processChartData(mode),
-    getStatsLastYear()
+    processCalendarData(year, metric),
+    processChartData(mode, metric),
+    getWeekStats()           // 获取最近1周运动统计
 }
 ```
+
+### 5.5 页面设计
+
+#### 5.5.1 仪表盘页 (Dashboard)
+上下两栏结构，顶部为导航区，底部为内容区。
+
+**导航区：**
+- 左侧：个人信息展示（头像、用户名、简介）
+- 右侧：导航菜单（仪表盘、运动记录）
+
+**内容区 - 上半部分：**
+- 左侧1/4区域：最近1周运动数据统计
+- 右侧3/4区域：日历图
+
+**内容区 - 下半部分：**
+- 数据统计和柱形图
+
+#### 5.5.2 运动记录页 (ActivityList)
+上下两栏结构，顶部为导航区，底部为内容区。
+
+**导航区：** 与仪表盘页面相同
+
+**内容区：** 运动数据表格
 
 ## 六、前端路由设计
 

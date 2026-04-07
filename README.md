@@ -60,6 +60,10 @@ sports-data-dashboard/
 - Vue3 + Vite：现代化的前端开发框架
 - 数据可视化：使用ECharts展示运动数据
 - 响应式设计：支持多设备访问
+- 用户信息展示：头像、用户名、简介及最近1周运动统计
+- 日历图：年度运动数据可视化，支持多种着色方式（距离/时长/次数/热量/平均速度）
+- 柱形图：多维度数据分析（周/月/年/全部模式），支持指标切换
+- 运动列表：详细运动记录展示，支持排序和筛选
 
 ## 快速开始
 
@@ -211,19 +215,19 @@ python main.py user update <username> [--avatar url] [--bio text]
 - [x] 用户管理功能
 
 ### 第三阶段：前端核心功能开发 🚧
-- [ ] 基础组件开发
-- [ ] 数据读取层
-- [ ] 状态管理
-- [ ] 用户信息模块
-- [ ] 日历视图
-- [ ] 柱形图视图
-- [ ] 运动列表
+- [ ] 基础组件开发（Header、Loading、ErrorBoundary等）
+- [ ] 数据读取层（SQLite/JSON数据读取）
+- [ ] 状态管理（Pinia dataStore）
+- [ ] 用户信息模块（头像、简介、最近1周统计）
+- [ ] 日历视图（年份切换、5种着色方式）
+- [ ] 柱形图视图（4种模式、指标切换、动态横轴）
+- [ ] 运动列表（表格展示、排序、筛选、分页）
 - [ ] 路由和页面集成
 
 ## 文档
 
 详细的项目文档请查看 [docs/](docs/) 目录：
-- [requirements.md](docs/requirements.md) - 需求规格说明书
+- [PRD.md](docs/PRD.md) - 产品需求规格说明书
 - [spec.md](docs/spec.md) - 技术规格说明书
 - [tasks.md](docs/tasks.md) - 任务分解
 - [checklist.md](docs/checklist.md) - 完成清单

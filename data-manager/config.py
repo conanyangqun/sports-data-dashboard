@@ -23,5 +23,18 @@ SPORT_TYPE_MAPPING = {
     'swimming': 'swimming',
     'walking': 'walking',
     'hiking': 'hiking',
-    'generic': 'other'
+    'generic': 'other',
+    'fitness_equipment': 'other',
+    'bouldering': 'other',
+    'elliptical': 'other',
+    'indoor_cycling': 'cycling',
+    'recumbent_cycling': 'cycling',
+    'mountain_biking': 'cycling',
+    'treadmill_running': 'running',
+    'track_cycling': 'cycling',
+    'road_biking': 'cycling',
+    'open_water_swimming': 'swimming',
+    'pool_swimming': 'swimming',
+    'virtual_run': 'running',
+    'indoor_running': 'running'
 }

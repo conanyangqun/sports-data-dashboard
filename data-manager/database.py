@@ -172,3 +172,91 @@ class Database:
         
         self.conn.commit()
         self.close()
+    
+    def delete_user(self):
+        self.connect()
+        cursor = self.conn.cursor()
+        cursor.execute('DELETE FROM users')
+        self.conn.commit()
+        self.close()
+    
+    def delete_activity(self, activity_id):
+        self.connect()
+        cursor = self.conn.cursor()
+        cursor.execute('DELETE FROM activities WHERE id = ?', (activity_id,))
+        self.conn.commit()
+        self.close()
+    
+    def delete_activities_by_date_range(self, start_date, end_date):
+        self.connect()
+        cursor = self.conn.cursor()
+        cursor.execute('''
+            DELETE FROM activities 
+            WHERE start_time >= ? AND start_time <= ?
+        ''', (start_date, end_date))
+        deleted_count = cursor.rowcount
+        self.conn.commit()
+        self.close()
+        return deleted_count
+    
+    def get_activity_by_id(self, activity_id):
+        self.connect()
+        cursor = self.conn.cursor()
+        cursor.execute('SELECT * FROM activities WHERE id = ?', (activity_id,))
+        activity = cursor.fetchone()
+        self.close()
+        return activity
+    
+    def get_activities_by_type(self, activity_type):
+        self.connect()
+        cursor = self.conn.cursor()
+        cursor.execute('''
+            SELECT * FROM activities 
+            WHERE activity_type = ? 
+            ORDER BY start_time DESC
+        ''', (activity_type,))
+        activities = cursor.fetchall()
+        self.close()
+        return activities
+    
+    def get_activities_by_date_range(self, start_date, end_date):
+        self.connect()
+        cursor = self.conn.cursor()
+        cursor.execute('''
+            SELECT * FROM activities 
+            WHERE start_time >= ? AND start_time <= ?
+            ORDER BY start_time DESC
+        ''', (start_date, end_date))
+        activities = cursor.fetchall()
+        self.close()
+        return activities
+    
+    def get_week_stats(self):
+        from datetime import datetime, timedelta
+        self.connect()
+        cursor = self.conn.cursor()
+        
+        now = datetime.now()
+        week_ago = now - timedelta(days=7)
+        
+        cursor.execute('''
+            SELECT 
+                COUNT(*) as count,
+                SUM(distance) as total_distance,
+                SUM(duration) as total_duration,
+                SUM(calories) as total_calories,
+                AVG(avg_speed) as avg_speed
+            FROM activities
+            WHERE start_time >= ?
+        ''', (week_ago,))
+        
+        result = cursor.fetchone()
+        self.close()
+        
+        return {
+            'total_activities': result[0] or 0,
+            'total_distance': result[1] or 0,
+            'total_duration': result[2] or 0,
+            'total_calories': result[3] or 0,
+            'avg_speed': result[4] or 0
+        }

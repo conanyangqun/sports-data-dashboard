@@ -8,7 +8,7 @@ class DataExporter:
         self.json_path = json_path or JSON_FILE
         self.db = Database(self.db_path)
     
-    def export_to_json(self):
+    def export_to_json(self, pretty=True):
         self.db.connect()
         cursor = self.db.conn.cursor()
         
@@ -56,7 +56,58 @@ class DataExporter:
             'activities': activities_data
         }
         
+        indent = 2 if pretty else None
         with open(self.json_path, 'w', encoding='utf-8') as f:
-            json.dump(export_data, f, ensure_ascii=False, indent=2, default=str)
+            json.dump(export_data, f, ensure_ascii=False, indent=indent, default=str)
         
         return export_data
+    
+    def validate_data(self):
+        self.db.connect()
+        cursor = self.db.conn.cursor()
+        
+        cursor.execute('SELECT COUNT(*) FROM activities')
+        activity_count = cursor.fetchone()[0]
+        
+        cursor.execute('SELECT COUNT(*) FROM users')
+        user_count = cursor.fetchone()[0]
+        
+        self.db.close()
+        
+        issues = []
+        
+        if user_count == 0:
+            issues.append('No user data found')
+        elif user_count > 1:
+            issues.append(f'Multiple users found ({user_count}), expected 1')
+        
+        if activity_count == 0:
+            issues.append('No activities found')
+        
+        return {
+            'valid': len(issues) == 0,
+            'issues': issues,
+            'activity_count': activity_count,
+            'user_count': user_count
+        }
+    
+    def get_data_summary(self):
+        self.db.connect()
+        cursor = self.db.conn.cursor()
+        
+        cursor.execute('SELECT MIN(start_time), MAX(start_time) FROM activities')
+        date_range = cursor.fetchone()
+        
+        cursor.execute('SELECT DISTINCT activity_type FROM activities')
+        types = [row[0] for row in cursor.fetchall()]
+        
+        self.db.close()
+        
+        return {
+            'total_activities': len(self.export_to_json(pretty=False)['activities']),
+            'date_range': {
+                'earliest': date_range[0],
+                'latest': date_range[1]
+            },
+            'activity_types': types
+        }

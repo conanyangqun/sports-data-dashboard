@@ -5,7 +5,11 @@ from config import SPORT_TYPE_MAPPING
 class FITParser:
     def __init__(self, file_path):
         self.file_path = file_path
-        self.fit_file = FitFile(file_path)
+        self.fit_file = None
+        try:
+            self.fit_file = FitFile(file_path)
+        except Exception as e:
+            raise ValueError(f"Failed to load FIT file: {e}")
     
     def parse(self):
         activity_data = {
@@ -26,6 +30,9 @@ class FITParser:
             'elevation_gain': None
         }
         
+        if not self.fit_file:
+            return activity_data
+        
         for record in self.fit_file.get_messages('session'):
             for data in record:
                 if data.name == 'sport':
@@ -39,9 +46,9 @@ class FITParser:
                     activity_data['distance'] = data.value
                 elif data.name == 'total_calories':
                     activity_data['calories'] = data.value
-                elif data.name == 'enhanced_max_speed':
+                elif data.name == 'enhanced_max_speed' or data.name == 'max_speed':
                     activity_data['max_speed'] = data.value
-                elif data.name == 'enhanced_avg_speed':
+                elif data.name == 'enhanced_avg_speed' or data.name == 'avg_speed':
                     activity_data['avg_speed'] = data.value
                 elif data.name == 'max_heart_rate':
                     activity_data['max_heart_rate'] = data.value
@@ -63,9 +70,11 @@ class FITParser:
         return activity_data
     
     def validate(self):
+        if not self.fit_file:
+            return False
         try:
-            FitFile(self.file_path)
-            return True
+            messages = list(self.fit_file.get_messages('session'))
+            return len(messages) > 0
         except Exception as e:
             print(f"Invalid FIT file: {e}")
             return False
