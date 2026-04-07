@@ -116,15 +116,18 @@ def user():
 
 @user.command()
 @click.argument('username')
+@click.option('--display-name', default=None, help='Display name')
 @click.option('--avatar', default=None, help='Avatar URL')
 @click.option('--bio', default=None, help='User bio')
 @click.option('--output', default=None, help='Database output path')
-def init(username, avatar, bio, output):
+def init(username, display_name, avatar, bio, output):
     db_path = output or DATABASE_FILE
     db = Database(db_path)
     
-    user_id = db.insert_user(username, avatar, bio)
+    user_id = db.insert_user(username, display_name, avatar, bio)
     click.echo(f'User initialized: {username} (ID: {user_id})')
+    if display_name:
+        click.echo(f'  Display Name: {display_name}')
     if avatar:
         click.echo(f'  Avatar: {avatar}')
     if bio:
@@ -132,19 +135,22 @@ def init(username, avatar, bio, output):
 
 @user.command()
 @click.argument('username')
+@click.option('--display-name', default=None, help='Display name')
 @click.option('--avatar', default=None, help='Avatar URL')
 @click.option('--bio', default=None, help='User bio')
 @click.option('--output', default=None, help='Database output path')
-def update(username, avatar, bio, output):
+def update(username, display_name, avatar, bio, output):
     db_path = output or DATABASE_FILE
     db = Database(db_path)
     
-    if not avatar and not bio:
-        click.echo('Please provide at least --avatar or --bio option')
+    if not display_name and not avatar and not bio:
+        click.echo('Please provide at least --display-name, --avatar or --bio option')
         return
     
-    db.update_user(username, avatar, bio)
+    db.update_user(username, display_name, avatar, bio)
     click.echo(f'User updated: {username}')
+    if display_name:
+        click.echo(f'  Display Name: {display_name}')
     if avatar:
         click.echo(f'  Avatar: {avatar}')
     if bio:
@@ -178,6 +184,7 @@ def show(username, output):
         click.echo('\n=== User Information ===')
         click.echo(f'ID: {user["id"]}')
         click.echo(f'Username: {user["username"]}')
+        click.echo(f'Display Name: {user["display_name"] or "Not set"}')
         click.echo(f'Avatar: {user["avatar_url"] or "Not set"}')
         click.echo(f'Bio: {user["bio"] or "Not set"}')
     else:

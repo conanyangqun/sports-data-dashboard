@@ -22,6 +22,7 @@ class Database:
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 username VARCHAR(50) NOT NULL UNIQUE,
+                display_name VARCHAR(100),
                 avatar_url VARCHAR(255),
                 bio TEXT
             )
@@ -47,6 +48,12 @@ class Database:
                 elevation_gain REAL
             )
         ''')
+        
+        try:
+            cursor.execute('ALTER TABLE users ADD COLUMN display_name VARCHAR(100)')
+            self.conn.commit()
+        except sqlite3.OperationalError:
+            pass
         
         self.conn.commit()
         self.close()
@@ -126,14 +133,14 @@ class Database:
         self.close()
         return result is not None
     
-    def insert_user(self, username, avatar_url=None, bio=None):
+    def insert_user(self, username, display_name=None, avatar_url=None, bio=None):
         self.connect()
         cursor = self.conn.cursor()
         
         cursor.execute('''
-            INSERT OR REPLACE INTO users (username, avatar_url, bio)
-            VALUES (?, ?, ?)
-        ''', (username, avatar_url, bio))
+            INSERT OR REPLACE INTO users (username, display_name, avatar_url, bio)
+            VALUES (?, ?, ?, ?)
+        ''', (username, display_name, avatar_url, bio))
         
         self.conn.commit()
         user_id = cursor.lastrowid
@@ -153,22 +160,30 @@ class Database:
         self.close()
         return user
     
-    def update_user(self, username, avatar_url=None, bio=None):
+    def update_user(self, username, display_name=None, avatar_url=None, bio=None):
         self.connect()
         cursor = self.conn.cursor()
         
-        if avatar_url and bio:
-            cursor.execute('''
-                UPDATE users SET avatar_url = ?, bio = ? WHERE username = ?
-            ''', (avatar_url, bio, username))
-        elif avatar_url:
-            cursor.execute('''
-                UPDATE users SET avatar_url = ? WHERE username = ?
-            ''', (avatar_url, username))
-        elif bio:
-            cursor.execute('''
-                UPDATE users SET bio = ? WHERE username = ?
-            ''', (bio, username))
+        updates = []
+        params = []
+        
+        if display_name is not None:
+            updates.append('display_name = ?')
+            params.append(display_name)
+        if avatar_url is not None:
+            updates.append('avatar_url = ?')
+            params.append(avatar_url)
+        if bio is not None:
+            updates.append('bio = ?')
+            params.append(bio)
+        
+        if not updates:
+            self.close()
+            return
+        
+        params.append(username)
+        query = f'UPDATE users SET {", ".join(updates)} WHERE username = ?'
+        cursor.execute(query, params)
         
         self.conn.commit()
         self.close()
