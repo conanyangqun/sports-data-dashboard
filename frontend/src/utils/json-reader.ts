@@ -40,7 +40,7 @@ export interface DataFile {
  */
 export async function loadData(): Promise<DataFile> {
   try {
-    const response = await fetch('/data/data.json')
+    const response = await fetch(`${import.meta.env.BASE_URL}data/data.json`)
     if (!response.ok) {
       throw new Error('Failed to load data file')
     }
