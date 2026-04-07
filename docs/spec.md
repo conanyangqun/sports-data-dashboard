@@ -274,12 +274,11 @@ total_ascent -> elevation_gain (可选)
 ### 5.1 页面结构
 ```
 App.vue
-├── Header.vue          # 顶部导航
-├── UserProfile.vue     # 用户信息展示
+├── AppHeader.vue          # 顶部导航
 ├── Dashboard.vue       # 主仪表盘
 │   ├── CalendarView.vue    # 日历视图
 │   └── ChartView.vue       # 柱形图视图
-└── ActivityList.vue   # 运动列表
+└── Activities.vue   # 运动列表页面
 ```
 
 ### 5.2 核心组件
@@ -289,6 +288,7 @@ App.vue
 - 显示最近 1 周运动数据统计（总距离、总时长、总次数、总热量、平均速度）
 - 从数据文件读取用户信息
 - 显示本周日期范围标签 (MM/DD - MM/DD)
+- 注：用户信息已整合到 Dashboard.vue 中
 
 #### 5.2.2 CalendarView.vue
 - 使用 ECharts 日历图展示运动数据
@@ -325,6 +325,7 @@ App.vue
   - 次数显示为整数
   - 其他指标保留一位小数
 - Y 轴名称加粗显示，颜色更深
+- 图表高度自适应
 
 #### 5.2.4 ActivityList.vue
 - 表格展示运动数据列表
@@ -333,6 +334,7 @@ App.vue
 - 支持按日期、类型筛选
 - 默认以运动日期倒序排列，支持点击表头切换排序方式
 - 运动类型映射：cycling/riding→骑行，running→跑步，swimming→游泳，walking→健走，hiking→徒步
+- 注：实际实现为 Activities.vue 页面组件
 
 ### 5.3 数据读取层
 
@@ -420,25 +422,26 @@ actions: {
 上下两栏结构，顶部为导航区，底部为内容区。
 
 **导航区：**
-- 左侧：个人信息展示（头像、用户名、简介）
+- 左侧：个人信息展示（头像、用户名、简介）+ 最近 1 周运动统计
 - 右侧：导航菜单（仪表盘、运动记录、地图）
 - 地图菜单：点击提示"地图页面正在开发中，敬请期待！"
 
 **内容区 - 上半部分：**
-- 左侧 1/4 区域：最近 1 周运动数据统计
+- 左侧 1/4 区域：最近 1 周运动数据统计（5 个指标卡片垂直排列）
 - 右侧 3/4 区域：日历图
 - 高度：左右两侧卡片高度相等（100%）
 
 **内容区 - 下半部分：**
-- 柱形图
-- 高度自适应
+- 柱形图（全宽显示，高度自适应）
 
 #### 5.5.2 运动记录页 (ActivityList)
 上下两栏结构，顶部为导航区，底部为内容区。
 
 **导航区：** 与仪表盘页面相同
 
-**内容区：** 运动数据表格
+**内容区：** 运动数据表格（Activities.vue 组件实现）
+- 11 列数据展示
+- 支持分页、排序、筛选
 
 ## 六、前端路由设计
 
@@ -451,13 +454,8 @@ const routes = [
     },
     {
         path: '/activities',
-        name: 'ActivityList',
-        component: ActivityList
-    },
-    {
-        path: '/profile',
-        name: 'Profile',
-        component: UserProfile
+        name: 'Activities',
+        component: Activities
     }
 ]
 ```
@@ -616,6 +614,7 @@ export const config = {
 
 - v1.0 (2026-04-07): 初始版本，完整的技术规格说明
 - v1.1 (2026-04-08): 更新年份选择器、日历图高度自适应、表头优化、地图菜单等
+- v1.2 (2026-04-08): 更新组件结构说明，整合用户信息到 Dashboard，简化路由配置
 
 ---
 
