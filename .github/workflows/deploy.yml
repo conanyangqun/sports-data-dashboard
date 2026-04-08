@@ -5,8 +5,17 @@ on:
     branches: [main]
   workflow_dispatch:
     inputs:
+      use_r2:
+        description: '从 Cloudflare R2 下载 data.json（需配置 Secrets）'
+        required: false
+        type: boolean
+        default: false
+      r2_url:
+        description: 'R2 文件 URL（留空则用 Secrets.R2_DATA_URL）'
+        required: false
+        type: string
       data_json:
-        description: '自定义 data.json 内容（留空则使用仓库中的文件）'
+        description: '自定义 data.json 内容（小文件用，留空则使用仓库中的文件）'
         required: false
         type: string
       is_base64:
@@ -31,8 +40,30 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Download data.json from R2
+        env:
+          R2_URL: ${{ inputs.r2_url || secrets.R2_DATA_URL }}
+        run: |
+          if [ "${{ github.event_name }}" = "push" ] && [ -n "$R2_URL" ]; then
+            echo "📥 Auto-downloading data.json from R2 (push to main)..."
+            curl -fSL --connect-timeout 10 --max-time 60 -o frontend/public/data/data.json "$R2_URL"
+          elif [ "${{ inputs.use_r2 }}" = "true" ]; then
+            DOWNLOAD_URL="${{ inputs.r2_url }}"
+            if [ -z "$DOWNLOAD_URL" ]; then
+              DOWNLOAD_URL="$R2_URL"
+            fi
+            if [ -z "$DOWNLOAD_URL" ]; then
+              echo "❌ Error: 未提供 R2 URL，请设置 secrets.R2_DATA_URL 或手动输入 r2_url"
+              exit 1
+            fi
+            echo "📥 Downloading data.json from R2..."
+            curl -fSL --connect-timeout 10 --max-time 60 -o frontend/public/data/data.json "$DOWNLOAD_URL"
+          else
+            echo "ℹ️ Skipping R2 download (using repo file or manual input)"
+          fi
+
       - name: Write custom data.json
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.data_json != '' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.data_json != '' && inputs.use_r2 != true }}
         run: |
           if [ "${{ inputs.is_base64 }}" = "true" ]; then
             echo "${{ inputs.data_json }}" | base64 -d > frontend/public/data/data.json
